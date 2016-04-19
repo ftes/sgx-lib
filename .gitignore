@@ -1,0 +1,7 @@
+Debug/
+Release/
+Simulation/
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.v11.suo
