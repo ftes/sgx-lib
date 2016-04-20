@@ -3,7 +3,6 @@
 
 #include "mystdio.h"
 
-char* get_error_description(int error_code);
 void log(char* format, ...);
 
 FILE*    fopen(const char * filename, const char * mode);

@@ -35,10 +35,13 @@
     <ClCompile Include="enclave_u.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="application.cpp">
+    <ClCompile Include="util_u.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util_u.c">
+    <ClCompile Include="..\common\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="application.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

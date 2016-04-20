@@ -185,6 +185,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\util.c" />
     <ClCompile Include="enclave.c" />
     <ClCompile Include="enclave_t.c" />
     <ClCompile Include="util_t.c" />

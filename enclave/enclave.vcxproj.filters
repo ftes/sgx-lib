@@ -27,6 +27,9 @@
     <ClCompile Include="util_t.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enclave_t.h">
