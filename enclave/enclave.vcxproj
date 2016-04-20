@@ -187,12 +187,12 @@
   <ItemGroup>
     <ClCompile Include="enclave.c" />
     <ClCompile Include="enclave_t.c" />
-    <ClCompile Include="util.c" />
+    <ClCompile Include="util_t.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\mystdio.h" />
     <ClInclude Include="enclave_t.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="util_t.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="enclave.edl">

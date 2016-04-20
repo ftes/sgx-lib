@@ -38,7 +38,7 @@
     <ClCompile Include="application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="util.c">
+    <ClCompile Include="util_u.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

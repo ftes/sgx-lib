@@ -1,6 +1,6 @@
 #include "enclave_t.h"
 #include "sgx_trts.h"
-#include "util.h"
+#include "util_t.h"
 
 #define FILE_NAME "test_file_in_application_dir.txt"
 void add_secret(int secret) {

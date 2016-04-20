@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <sgx_trts.h>
-#include "util.h"
+#include "util_t.h"
 #include "enclave_t.h"
 
 #define MAX_LOG_MESSAGE_LENGTH 200

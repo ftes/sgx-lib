@@ -21,10 +21,10 @@
     <ClCompile Include="enclave_t.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="util.c">
+    <ClCompile Include="enclave.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="enclave.c">
+    <ClCompile Include="util_t.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,10 +32,10 @@
     <ClInclude Include="enclave_t.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="..\include\mystdio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\mystdio.h">
+    <ClInclude Include="util_t.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

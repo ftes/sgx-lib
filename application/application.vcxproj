@@ -173,7 +173,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Prerelease|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="util.c" />
+    <ClCompile Include="util_u.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\enclave\enclave.edl">
