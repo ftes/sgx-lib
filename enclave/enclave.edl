@@ -47,5 +47,8 @@ enclave {
 
 		/* logging */
 		void log_ocall([in, string] char* message);
+
+
+		/* GENERATE OCALL CODE AFTER THIS LINE */
 	};
 };

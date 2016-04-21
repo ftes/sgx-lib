@@ -76,3 +76,6 @@ size_t fread(const void* buffer, size_t size, size_t count, FILE* stream) {
   throw std::runtime_error("secure fread not implemented");
 }
 #endif
+
+
+/* GENERATE OCALL CODE AFTER THIS LINE */

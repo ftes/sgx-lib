@@ -46,3 +46,6 @@ int fseek_ocall(FILE* file, long offset, int origin) {
 long ftell_ocall(FILE* file) {
   return ftell(file);
 }
+
+
+/* GENERATE OCALL CODE AFTER THIS LINE */

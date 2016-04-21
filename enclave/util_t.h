@@ -12,4 +12,7 @@ int      fclose(FILE * file);
 int      fseek(FILE* file, long offset, int origin);
 long     ftell(FILE* file);
 
+
+/* GENERATE OCALL CODE AFTER THIS LINE */
+
 #endif UTIL_H
