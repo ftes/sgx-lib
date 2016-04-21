@@ -58,6 +58,18 @@ typedef struct ms_fread_ocall_t {
 	FILE* ms_stream;
 } ms_fread_ocall_t;
 
+typedef struct ms_fseek_ocall_t {
+	int ms_retval;
+	FILE* ms_file;
+	long int ms_offset;
+	int ms_origin;
+} ms_fseek_ocall_t;
+
+typedef struct ms_ftell_ocall_t {
+	long int ms_retval;
+	FILE* ms_file;
+} ms_ftell_ocall_t;
+
 typedef struct ms_log_ocall_t {
 	char* ms_message;
 } ms_log_ocall_t;
@@ -102,10 +114,12 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[5][2];
+	uint8_t entry_table[7][2];
 } g_dyn_entry_table = {
-	5,
+	7,
 	{
+		{0, 0, },
+		{0, 0, },
 		{0, 0, },
 		{0, 0, },
 		{0, 0, },
@@ -226,6 +240,40 @@ sgx_status_t SGX_CDECL fread_ocall(size_t* retval, const void* buffer, size_t si
 	return status;
 }
 
+sgx_status_t SGX_CDECL fseek_ocall(int* retval, FILE* file, long int offset, int origin)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_fseek_ocall_t* ms;
+	OCALLOC(ms, ms_fseek_ocall_t*, sizeof(*ms));
+
+	ms->ms_file = SGX_CAST(FILE*, file);
+	ms->ms_offset = offset;
+	ms->ms_origin = origin;
+	status = sgx_ocall(4, ms);
+
+	if (retval) *retval = ms->ms_retval;
+
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ftell_ocall(long int* retval, FILE* file)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_ftell_ocall_t* ms;
+	OCALLOC(ms, ms_ftell_ocall_t*, sizeof(*ms));
+
+	ms->ms_file = SGX_CAST(FILE*, file);
+	status = sgx_ocall(5, ms);
+
+	if (retval) *retval = ms->ms_retval;
+
+	sgx_ocfree();
+	return status;
+}
+
 sgx_status_t SGX_CDECL log_ocall(char* message)
 {
 	sgx_status_t status = SGX_SUCCESS;
@@ -244,7 +292,7 @@ sgx_status_t SGX_CDECL log_ocall(char* message)
 		return SGX_ERROR_INVALID_PARAMETER;
 	}
 	
-	status = sgx_ocall(4, ms);
+	status = sgx_ocall(6, ms);
 
 
 	sgx_ocfree();

@@ -4,16 +4,21 @@
 
 #define FILE_NAME "test_file_in_application_dir.txt"
 void add_secret(int secret) {
-  FILE *file = fopen(FILE_NAME, "rw");
-  fwrite(&secret , 1 , sizeof(secret) , file);
+  FILE *file = fopen(FILE_NAME, "w" /*delete existing*/);
+  fwrite(&secret, sizeof(secret), 1, file);
   fclose(file);
 }
 
 void print_secrets() {
   FILE *file = fopen(FILE_NAME, "r");
+  long size;
+
+  fseek (file , 0 , SEEK_END);
+  size = ftell (file);
+  rewind (pFile);
   int secret;
   size_t ret;
-  //fread(&secret, 1, sizeof(secret), file);
+  fread(&secret, sizeof(secret), 1, file);
   log("%d", secret);
   fclose(file);
 }

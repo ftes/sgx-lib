@@ -20,6 +20,8 @@ FILE* SGX_UBRIDGE(SGX_NOCONVENTION, fopen_ocall, (const char* filename, const ch
 int SGX_UBRIDGE(SGX_NOCONVENTION, fclose_ocall, (FILE* stream));
 size_t SGX_UBRIDGE(SGX_NOCONVENTION, fwrite_ocall, (const void* buffer, size_t size, size_t count, FILE* stream));
 size_t SGX_UBRIDGE(SGX_NOCONVENTION, fread_ocall, (const void* buffer, size_t size, size_t count, FILE* stream));
+int SGX_UBRIDGE(SGX_NOCONVENTION, fseek_ocall, (FILE* file, long int offset, int origin));
+long int SGX_UBRIDGE(SGX_NOCONVENTION, ftell_ocall, (FILE* file));
 void SGX_UBRIDGE(SGX_NOCONVENTION, log_ocall, (char* message));
 
 sgx_status_t add_secret(sgx_enclave_id_t eid, int secret);

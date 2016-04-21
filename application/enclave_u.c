@@ -32,6 +32,18 @@ typedef struct ms_fread_ocall_t {
 	FILE* ms_stream;
 } ms_fread_ocall_t;
 
+typedef struct ms_fseek_ocall_t {
+	int ms_retval;
+	FILE* ms_file;
+	long int ms_offset;
+	int ms_origin;
+} ms_fseek_ocall_t;
+
+typedef struct ms_ftell_ocall_t {
+	long int ms_retval;
+	FILE* ms_file;
+} ms_ftell_ocall_t;
+
 typedef struct ms_log_ocall_t {
 	char* ms_message;
 } ms_log_ocall_t;
@@ -64,6 +76,20 @@ static sgx_status_t SGX_CDECL enclave_fread_ocall(void* pms)
 	return SGX_SUCCESS;
 }
 
+static sgx_status_t SGX_CDECL enclave_fseek_ocall(void* pms)
+{
+	ms_fseek_ocall_t* ms = SGX_CAST(ms_fseek_ocall_t*, pms);
+	ms->ms_retval = fseek_ocall(ms->ms_file, ms->ms_offset, ms->ms_origin);
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL enclave_ftell_ocall(void* pms)
+{
+	ms_ftell_ocall_t* ms = SGX_CAST(ms_ftell_ocall_t*, pms);
+	ms->ms_retval = ftell_ocall(ms->ms_file);
+	return SGX_SUCCESS;
+}
+
 static sgx_status_t SGX_CDECL enclave_log_ocall(void* pms)
 {
 	ms_log_ocall_t* ms = SGX_CAST(ms_log_ocall_t*, pms);
@@ -73,14 +99,16 @@ static sgx_status_t SGX_CDECL enclave_log_ocall(void* pms)
 
 static const struct {
 	size_t nr_ocall;
-	void * func_addr[5];
+	void * func_addr[7];
 } ocall_table_enclave = {
-	5,
+	7,
 	{
 		(void*)(uintptr_t)enclave_fopen_ocall,
 		(void*)(uintptr_t)enclave_fclose_ocall,
 		(void*)(uintptr_t)enclave_fwrite_ocall,
 		(void*)(uintptr_t)enclave_fread_ocall,
+		(void*)(uintptr_t)enclave_fseek_ocall,
+		(void*)(uintptr_t)enclave_ftell_ocall,
 		(void*)(uintptr_t)enclave_log_ocall,
 	}
 };

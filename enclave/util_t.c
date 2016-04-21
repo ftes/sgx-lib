@@ -38,6 +38,18 @@ int fclose(FILE * stream) {
   return rc;
 }
 
+int fseek(FILE* file, long offset, int origin) {
+  int rc;
+  check(fseek_ocall(&rc, file, offset, origin));
+  return rc;
+}
+
+long ftell(FILE* file) {
+  long ret;
+  check(ftell_ocall(&ret, file));
+  return ret;
+}
+
 #ifdef SGX_INSECURE_FILE_OPERATIONS
 size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;

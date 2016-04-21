@@ -15,4 +15,12 @@ struct _iobuf {
         };
 typedef struct _iobuf FILE;
 
+#define SEEK_CUR    1
+#define SEEK_END    2
+#define SEEK_SET    0
+#define FILENAME_MAX    260
+#define FOPEN_MAX       20
+#define _SYS_OPEN       20
+#define TMP_MAX         32767  /* SHRT_MAX */
+
 #endif

@@ -34,6 +34,16 @@ enclave {
 			[user_check] FILE * stream
 		);
 
+		int fseek_ocall(
+			[user_check] FILE* file,
+			long offset,
+			int origin
+		);
+
+		long ftell_ocall(
+			[user_check] FILE* file
+		);
+
 
 		/* logging */
 		void log_ocall([in, string] char* message);
