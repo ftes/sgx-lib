@@ -1,6 +1,7 @@
 #!/bin/bash
 # input: add_ocall.sh <.edl style method signature>
-# for example `void rewind([user_check] FILE * file);`
+# for example `void rewind([user_check] FILE* file);`
+# formatting of pointer types: `type* name` (asterisk right after type, without a space inbetween)
 
 ENCLAVE_DIR="enclave"
 APP_DIR="application"
@@ -27,6 +28,9 @@ NAME=$(grep -Eo '([^ ])+\(' <<< $FUNC | head -c-2)
 # get params all in one string
 PARAMS=$(grep -Eo '\([^\)]*' <<< $FUNC | cut -c 2-)
 
+# get signature without .edl [attributes]
+FUNC_VANILLA=$(sed 's/\[[^]]*\]//g' <<< $FUNC)
+
 # build $PARAMS_ARRAY
 PARAMS_ARRAY=()
 PARAM_NAMES_ARRAY=()
@@ -36,7 +40,7 @@ while read -r line ; do
 	PARAMS_ARRAY+=("$PARAM")
 
 	PARAM_NAMES_ARRAY+=($(grep -oE '[^ ]+$' <<< $PARAM))
-done <<< "$(echo "$FUNC" | grep -Eo '[^\(,]*[,\)]')"
+done <<< "$(echo "$FUNC_VANILLA" | grep -Eo '[^\(,]*[,\)]')"
 
 # output params without .edl [attributes]
 PARAMS_VANILLA=$(join ', ' "${PARAMS_ARRAY[@]}")
@@ -48,7 +52,7 @@ PARAM_NAMES=$(join ', ' "${PARAM_NAMES_ARRAY[@]}")
 #################################
 
 NAME_OCALL="${NAME}_ocall"
-FUNC_VANILLA="$RET $NAME ($PARAMS_VANILLA)"
+FUNC_VANILLA="$RET $NAME($PARAMS_VANILLA)" #cleaner version (no superfluous whitespace)
 EDL_SIGNATURE="\ \t\t$RET $NAME_OCALL($PARAMS);"
 if [ "$RET" != "void" ]; then
 	RET_DECLARE="  $RET ret;\n"
@@ -62,13 +66,14 @@ $RET_DECLARE\
 $RET_RETURN\
 }\n\
 "
-UNTRUSTED_WRAPPER="$RET $NAME_OCALL ($PARAMS_VANILLA) {\n\
+UNTRUSTED_WRAPPER="$RET $NAME_OCALL($PARAMS_VANILLA) {\n\
   $RETURN$NAME($PARAM_NAMES);\n\
 }\n\
 "
 
+
 #########################
-# STEP 2: generate output
+# STEP 3: generate output
 #########################
 
 # .edl: output signature with .edl attributes
