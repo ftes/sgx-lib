@@ -23,29 +23,6 @@ void log_ocall(char* message) {
    actual DLL implementations.
 */
 
-FILE* fopen_ocall(const char* filename, const char* mode) {
-  return fopen(filename, mode);
-}
-
-int fclose_ocall(FILE * stream) {
-  return fclose(stream);
-}
-
-size_t fwrite_ocall(const void* buffer, size_t size, size_t count, FILE* stream) {
-  return fwrite(buffer, size, count, stream);
-}
-
-size_t fread_ocall(void* buffer, size_t size, size_t count, FILE* stream) {
-  return fread(buffer, size, count, stream);
-}
-
-int fseek_ocall(FILE* file, long offset, int origin) {
-  return fseek(file, offset, origin);
-}
-
-long ftell_ocall(FILE* file) {
-  return ftell(file);
-}
-
 
 /* GENERATE OCALL CODE AFTER THIS LINE */
+

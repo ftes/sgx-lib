@@ -8,42 +8,8 @@ enclave {
 	include "stdio.h"
 	include "mystdio.h"
     untrusted {
-		/* file method signatures copied from SGX SDK guide */
-
-		/* "pointers returned by an ECALL or OCALL function are not checked by
-		    the edge-routines and must be verified by the enclave code" (sdk guide) */
-		FILE * fopen_ocall(
-			[in,string] const char * filename,
-			[in,string] const char * mode);
-
-		int fclose_ocall(
-			[user_check] FILE * stream
-		);
- 
-		size_t fwrite_ocall(
-			[in, size=size, count=count] const void * buffer,
-			size_t size, 
-			size_t count,
-			[user_check] FILE * stream
-		);
-
-		size_t fread_ocall(
-			[in, size=size, count=count] void * buffer,
-			size_t size,
-			size_t count,
-			[user_check] FILE * stream
-		);
-
-		int fseek_ocall(
-			[user_check] FILE* file,
-			long offset,
-			int origin
-		);
-
-		long ftell_ocall(
-			[user_check] FILE* file
-		);
-
+		/* "pointers returned by an ECALL or OCALL function are not checked by
+		    the edge-routines and must be verified by the enclave code" (sdk guide) */
 
 		/* logging */
 		void log_ocall([in, string] char* message);

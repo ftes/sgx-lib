@@ -27,44 +27,9 @@ void check(sgx_status_t rc) {
   }
 }
 
-FILE* fopen(const char* filename, const char* mode) {
-  FILE *file;
-  check(fopen_ocall(&file, filename, mode));
-  return file;
-}
-
-int fclose(FILE * stream) {
-  int rc;
-  check(fclose_ocall(&rc, stream));
-  return rc;
-}
-
-int fseek(FILE* file, long offset, int origin) {
-  int rc;
-  check(fseek_ocall(&rc, file, offset, origin));
-  return rc;
-}
-
-long ftell(FILE* file) {
-  long ret;
-  check(ftell_ocall(&ret, file));
-  return ret;
-}
 
 #ifdef SGX_INSECURE_FILE_OPERATIONS
-size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
-  size_t ret;
-  log("insecure file operation used");
-  check(fwrite_ocall(&ret, buffer, size, count, stream));
-  return ret;
-}
 
-size_t fread(void* buffer, size_t size, size_t count, FILE* stream) {
-  size_t ret;
-  log("insecure file operation used");
-  check(fread_ocall(&ret, buffer, size, count, stream));
-  return ret;
-}
 #else
 size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
   //TODO seal upon writing
