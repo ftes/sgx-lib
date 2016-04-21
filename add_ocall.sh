@@ -2,6 +2,7 @@
 # input: add_ocall.sh <.edl style method signature>
 # for example `void rewind([user_check] FILE* file);`
 # formatting of pointer types: `type* name` (asterisk right after type, without a space inbetween)
+# HOOK_IN_FILE (where to place generated code) can be overridden by an environment variable with that name
 
 ENCLAVE_DIR="enclave"
 APP_DIR="application"
@@ -11,7 +12,7 @@ TRUSTED_H="$ENCLAVE_DIR/util_t.h"
 UNTRUSTED_C="$APP_DIR/util_u.c"
 
 FUNC=$1
-HOOK_IN_FILE="\/\* GENERATE OCALL CODE AFTER THIS LINE \*\/"
+HOOK_IN_FILE=${HOOK_IN_FILE:-"\/\* GENERATE OCALL CODE AFTER THIS LINE \*\/"}
 
 function join { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
 
