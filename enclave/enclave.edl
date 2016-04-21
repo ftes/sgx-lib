@@ -14,6 +14,15 @@ enclave {
 		/* logging */
 		void log_ocall([in, string] char* message);
 
+		/* file functions */
+ 		void rewind_ocall([user_check] FILE* file);
+ 		int fseek_ocall([user_check] FILE* file, long offset, int origin);
+ 		long ftell_ocall([user_check] FILE* file);
+ 		size_t fwrite_ocall([in, size=size, count=count] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+ 		size_t fread_ocall([in, size=size, count=count] void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+ 		int fclose_ocall([user_check] FILE* stream);
+ 		FILE* fopen_ocall([in,string] const char* filename, [in,string] const char* mode);
+
 
 		/* GENERATE OCALL CODE AFTER THIS LINE */
 	};
