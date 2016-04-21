@@ -2,6 +2,7 @@
 #include <sgx_trts.h>
 #include "util_t.h"
 #include "enclave_t.h"
+#include "util.h"
 
 #define MAX_LOG_MESSAGE_LENGTH 200
 /* maximum length: 200 characters */
@@ -58,7 +59,7 @@ size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
   return ret;
 }
 
-size_t fread(const void* buffer, size_t size, size_t count, FILE* stream) {
+size_t fread(void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   log("insecure file operation used");
   check(fread_ocall(&ret, buffer, size, count, stream));

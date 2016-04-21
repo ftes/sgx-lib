@@ -72,7 +72,7 @@ static sgx_status_t SGX_CDECL enclave_fwrite_ocall(void* pms)
 static sgx_status_t SGX_CDECL enclave_fread_ocall(void* pms)
 {
 	ms_fread_ocall_t* ms = SGX_CAST(ms_fread_ocall_t*, pms);
-	ms->ms_retval = fread_ocall((const void*)ms->ms_buffer, ms->ms_size, ms->ms_count, ms->ms_stream);
+	ms->ms_retval = fread_ocall(ms->ms_buffer, ms->ms_size, ms->ms_count, ms->ms_stream);
 	return SGX_SUCCESS;
 }
 

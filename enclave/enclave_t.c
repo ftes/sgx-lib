@@ -211,7 +211,7 @@ sgx_status_t SGX_CDECL fwrite_ocall(size_t* retval, const void* buffer, size_t s
 	return status;
 }
 
-sgx_status_t SGX_CDECL fread_ocall(size_t* retval, const void* buffer, size_t size, size_t count, FILE* stream)
+sgx_status_t SGX_CDECL fread_ocall(size_t* retval, void* buffer, size_t size, size_t count, FILE* stream)
 {
 	sgx_status_t status = SGX_SUCCESS;
 	size_t _len_buffer = count * size;
@@ -221,7 +221,7 @@ sgx_status_t SGX_CDECL fread_ocall(size_t* retval, const void* buffer, size_t si
 
 	if (buffer != NULL && sgx_is_within_enclave(buffer, _len_buffer)) {
 		OCALLOC(ms->ms_buffer, void*, _len_buffer);
-		memcpy((void*)ms->ms_buffer, buffer, _len_buffer);
+		memcpy(ms->ms_buffer, buffer, _len_buffer);
 	} else if (buffer == NULL) {
 		ms->ms_buffer = NULL;
 	} else {

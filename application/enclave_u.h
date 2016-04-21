@@ -19,7 +19,7 @@ extern "C" {
 FILE* SGX_UBRIDGE(SGX_NOCONVENTION, fopen_ocall, (const char* filename, const char* mode));
 int SGX_UBRIDGE(SGX_NOCONVENTION, fclose_ocall, (FILE* stream));
 size_t SGX_UBRIDGE(SGX_NOCONVENTION, fwrite_ocall, (const void* buffer, size_t size, size_t count, FILE* stream));
-size_t SGX_UBRIDGE(SGX_NOCONVENTION, fread_ocall, (const void* buffer, size_t size, size_t count, FILE* stream));
+size_t SGX_UBRIDGE(SGX_NOCONVENTION, fread_ocall, (void* buffer, size_t size, size_t count, FILE* stream));
 int SGX_UBRIDGE(SGX_NOCONVENTION, fseek_ocall, (FILE* file, long int offset, int origin));
 long int SGX_UBRIDGE(SGX_NOCONVENTION, ftell_ocall, (FILE* file));
 void SGX_UBRIDGE(SGX_NOCONVENTION, log_ocall, (char* message));

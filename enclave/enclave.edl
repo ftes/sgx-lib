@@ -28,7 +28,7 @@ enclave {
 		);
 
 		size_t fread_ocall(
-			[in, size=size, count=count] const void * buffer,
+			[in, size=size, count=count] void * buffer,
 			size_t size,
 			size_t count,
 			[user_check] FILE * stream
