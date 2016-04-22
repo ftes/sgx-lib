@@ -9,7 +9,11 @@ This library contains helper functions for developing enclaves. These include
 ## General
 Macro `SGX_ENCLAVE` has to be set in enclave project (`mystdio.h` header problem).
 
-## File operations
-Reading from and writing to files can be done in *legacy mode* or *secure mode*.
-In the latter, the contents are sealed to the platform. Replay protection **IS NOT** added.
-Legacy mode is enabled by defining the `SGX_INSECURE_FILE_OPERATIONS` macro.
+## Insecure I/O operations
+Enabled by the `SGX_INSECURE_IO_OPERATIONS` macro.
+
+During development, insecure I/O operations can be used. These allow data to leave the enclave unencrypted.
+When including legacy code, this allows legacy compatible behaviour, **without** security garuantees.
+
+Without this macro, writes and reads to standard and file streams are sealed (encrypted).
+Replay protection **IS NOT** added.

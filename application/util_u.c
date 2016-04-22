@@ -1,6 +1,6 @@
 #include "enclave_u.h"
+#include "util.h"
 
-#define LOG_FILE "log.txt"
 void log_ocall(char* message) {
   FILE *file = fopen(LOG_FILE, "a");
   if (file != NULL) {
@@ -9,6 +9,11 @@ void log_ocall(char* message) {
     fclose(file);
   }
 }
+
+void print_ocall(char* message) {
+  puts(message);
+}
+
 
 /* Function definitions in the .edl can also link directly against implementations provided by DLLs by adding [cdecl, dllimport] (see SDK guide).
    However, the generated stub in the enclave has a different signature in case the function has a return value. The generated signature of the

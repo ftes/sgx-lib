@@ -4,6 +4,7 @@
 #include "mystdio.h"
 
 void log(char* format, ...);
+void printf(char* format, ...);
 
 /* file functions */
 void rewind(FILE* file);

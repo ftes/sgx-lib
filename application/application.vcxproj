@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\mystdio.h" />
+    <ClInclude Include="..\include\util.h" />
     <ClInclude Include="enclave_u.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

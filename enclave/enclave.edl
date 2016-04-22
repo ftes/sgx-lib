@@ -13,6 +13,7 @@ enclave {
 
 		/* logging */
 		void log_ocall([in, string] char* message);
+		void print_ocall([in, string] char* message);
 
 		/* file functions */
  		void rewind_ocall([user_check] FILE* file);

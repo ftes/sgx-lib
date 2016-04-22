@@ -30,18 +30,21 @@
     <ClInclude Include="..\include\mystdio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="enclave_u.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="util_u.c">
+    <ClCompile Include="application.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\util.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="application.c">
+    <ClCompile Include="util_u.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,22 +4,6 @@
 #include "enclave_t.h"
 #include "util.h"
 
-#define MAX_LOG_MESSAGE_LENGTH 200
-/* maximum length: 200 characters */
-
-/* combines sprintf and log */
-void log(char* format, ...) {
-  char *formatted;
-
-  va_list argptr;
-  va_start(argptr, format);
-  formatted = (char*) malloc(MAX_LOG_MESSAGE_LENGTH * sizeof(*formatted));
-  vsnprintf(formatted, MAX_LOG_MESSAGE_LENGTH, format, argptr);
-  va_end(argptr);
-
-  log_ocall(formatted);
-}
-
 void check(sgx_status_t rc) {
   if (rc != SGX_SUCCESS) {
     char* desc = get_error_description(rc);
@@ -27,9 +11,16 @@ void check(sgx_status_t rc) {
   }
 }
 
+char* vsprintf(char* format, va_list args) {
+  char *formatted;
+  int size;
+  size = vsnprintf(NULL, 0, format, args) + 1; //+1 for trailing \0
+  formatted = (char*) malloc(size * sizeof(*formatted));
+  vsnprintf(formatted, size, format, args);
+  return formatted;
+}
 
-/* file functions */
-#ifdef SGX_INSECURE_FILE_OPERATIONS
+#ifdef SGX_INSECURE_IO_OPERATIONS
 size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   check(fwrite_ocall(&ret, buffer, size, count, stream));
@@ -41,18 +32,33 @@ size_t fread(void* buffer, size_t size, size_t count, FILE* stream) {
   check(fread_ocall(&ret, buffer, size, count, stream));
   return ret;
 }
-#else
-size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
-  //TODO seal upon writing
-  throw std::runtime_error("secure fwrite not implemented");
+
+/* combines sprintf and log */
+void log(char* format, ...) {
+  char *formatted;
+  va_list argptr;
+  va_start(argptr, format);
+  formatted = vsprintf(format, argptr);
+  va_end(argptr);
+  log_ocall(formatted);
+  free(formatted);
 }
 
-size_t fread(const void* buffer, size_t size, size_t count, FILE* stream) {
-  //TODO unseal upon reading
-  throw std::runtime_error("secure fread not implemented");
+void printf(char* format, ...) {
+  char *formatted;
+  va_list argptr;
+  va_start(argptr, format);
+  formatted = vsprintf(format, argptr);
+  va_end(argptr);
+  print_ocall(formatted);
+  free(formatted);
 }
+#else
+// missing
 #endif
 
+
+/* file functions */
 void rewind(FILE* file) {
   check(rewind_ocall(file));
 }
