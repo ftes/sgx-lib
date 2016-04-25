@@ -1,18 +1,18 @@
 # About
 This library contains helper functions for developing enclaves. These include
 
-- logging
+- debugging helpers (printf function)
 - file operations
 
 
 # Usage
 Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an enclave library.
 
-## Untrusted Application
+## Consume library in Untrusted Project (application)
 - `Properties -> Common Properties -> Frameworks and References -> Add sgx_lib_u`
 - Add additional include directory: `..\include`
 
-## Trusted Application
+## Consume library in Trusted Project (enclave)
 - `Properties -> Common Properties -> Frameworks and References -> Add sgx_lib_t`
 - Add additional include directories: `..\include` and `..\sgx_lib_t\include`
 - Set macro `SGX_ENCLAVE` (header problem with `sgx_lib_stdio.h`)
