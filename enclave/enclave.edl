@@ -20,8 +20,15 @@ enclave {
  		void rewind_ocall([user_check] FILE* file);
  		int fseek_ocall([user_check] FILE* file, long offset, int origin);
  		long ftell_ocall([user_check] FILE* file);
- 		size_t fwrite_ocall([in, size=size, count=count] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);
- 		size_t fread_ocall([out, size=size, count=count] void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+
+		/* two versions: either write mem living in enclave, or in application */
+ 		size_t fwrite_enclave_memory_ocall([in, size=size, count=count] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+ 		/*size_t fwrite_untrusted_memory_ocall([user_check] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
+
+		/* two versions: copy buffer into enclave, or leave buffer in applcation */
+ 		size_t fread_copy_into_enclave_memory_ocall([out, size=size, count=count] void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+ 		/*size_t fread_leave_in_untrusted_memory_ocall([user_check] void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
+
  		int fclose_ocall([user_check] FILE* stream);
  		FILE* fopen_ocall([in,string] const char* filename, [in,string] const char* mode);
 
