@@ -8,13 +8,19 @@ This library contains helper functions for developing enclaves. These include
 # Usage
 Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an enclave library.
 
+A reference project that consumes this library can be found at `github.com/ftes/sgx-lib-consumer/`
+
+## Import `sgx_lib_{u,t}` projects
+
+## Switch configuration to `Simulation`
+
 ## Consume library in Untrusted Project (application)
-- `Properties -> Common Properties -> Frameworks and References -> Add sgx_lib_u`
-- Add additional include directory: `..\include`
+- `Properties -> Common Properties -> Frameworks and References -> Add `sgx_lib_u`
+- Add additional include directory: `..\include` (relative path may differ, depending on your setup)
 
 ## Consume library in Trusted Project (enclave)
-- `Properties -> Common Properties -> Frameworks and References -> Add sgx_lib_t`
-- Add additional include directories: `..\include` and `..\sgx_lib_t\include`
+- `Properties -> Common Properties -> Frameworks and References -> Add `sgx_lib_t`
+- Add additional include directories: `..\include` and `..\sgx_lib_t\include` (relative path may differ, depending on your setup)
 - Set macro `SGX_ENCLAVE` (header problem with `sgx_lib_stdio.h`)
 
 
