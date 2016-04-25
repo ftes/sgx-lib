@@ -1,6 +1,7 @@
 Debug/
 Release/
 Simulation/
+ipch/
 *.vcxproj.user
 *.opensdf
 *.sdf

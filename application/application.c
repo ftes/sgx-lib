@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "sgx_urts.h"
-#include "util.h"
+#include "sgx_lib.h"
 #include "enclave_u.h"
 
 #define ENCLAVE_FILE _T("enclave.signed.dll")

@@ -14,25 +14,25 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Generated Files">
-      <UniqueIdentifier>{23b50c3e-801a-4ddb-a483-9ff479a59ee1}</UniqueIdentifier>
+      <UniqueIdentifier>{0ba3dab5-ebbf-4585-9731-315d58f07990}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enclave_u.h">
+    <CustomBuild Include="..\sgx_lib_t\sgx_lib.edl">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sgx_lib_u.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="enclave_u.c">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="application.c">
+    <ClCompile Include="..\common\sgx_lib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\enclave\enclave.edl">
+    <ClCompile Include="sgx_lib_u_ocalls.c">
       <Filter>Source Files</Filter>
-    </CustomBuild>
+    </ClCompile>
   </ItemGroup>
 </Project>

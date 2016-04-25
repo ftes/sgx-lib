@@ -1,10 +1,7 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef SGX_LIB_T_STDIO_H
+#define SGX_LIB_T_STDIO_H
 
-#include "mystdio.h"
-
-void log(char* format, ...);
-void printf(char* format, ...);
+#include "sgx_lib_stdio.h"
 
 /* file functions */
 void rewind(FILE* file);
@@ -19,4 +16,4 @@ FILE* fopen(const char* filename, const char* mode);
 /* GENERATE OCALL CODE AFTER THIS LINE */
 
 
-#endif UTIL_H
+#endif

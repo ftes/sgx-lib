@@ -1,5 +1,5 @@
-#include "enclave_u.h"
-#include "util.h"
+#include "sgx_lib_u.h"
+#include "sgx_lib.h"
 
 void log_ocall(char* message) {
   FILE *file = fopen(LOG_FILE, "a");

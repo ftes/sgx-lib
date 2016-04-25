@@ -1,4 +1,4 @@
-#include "util.h"
+#include "sgx_lib.h"
 
 char* get_error_description(int error_code) {
 switch (error_code) {

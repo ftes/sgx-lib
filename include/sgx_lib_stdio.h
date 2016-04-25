@@ -1,7 +1,7 @@
 //only define FILE in enclave (application's stdio.h should have this typedef already)
 
-#if defined(SGX_ENCLAVE) && !defined(MYSTDIO_H)
-#define MYSTDIO_H
+#if defined(SGX_ENCLAVE) && !defined(SGX_LIB_STDIO_H)
+#define SGX_LIB_STDIO_H
 
 struct _iobuf {
         char *_ptr;

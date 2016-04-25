@@ -1,1 +1,0 @@
-"%SGX_HOME%\bin\win32\Release\sgx_edger8r.exe" --trusted-dir . --untrusted-dir ../application enclave.edl
