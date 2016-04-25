@@ -8,6 +8,10 @@ void log_ocall(char* message) {
     fputs("\n", file);
     fclose(file);
   }
+  
+  //also log to stdout
+  fputs(message, stdout);
+  fputs("\n", stdout);
 }
 
 void print_ocall(char* message) {

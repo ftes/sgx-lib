@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
   sgx_status_t       ret   = SGX_SUCCESS;
   sgx_launch_token_t token = {0};
   int updated = 0;
+  int secret;
 
   // Launch the enclave
   // Token is not stored for now (would speed up subsequent launches)
@@ -22,7 +23,11 @@ int main(int argc, char* argv[])
   }
 
   // Interact with the enclave
-  add_secret(eid, 2);
+  printf("Secret to seal by the enclave (-1 to reuse old secret): ");
+  scanf("%d%*c", &secret);
+  if (secret != -1) {
+    add_secret(eid, secret);
+  }
   print_secrets(eid);
 
   // Destroy the enclave
@@ -31,5 +36,7 @@ int main(int argc, char* argv[])
     return -1;
   }
 
+  printf("Press any key to exit...");
+  getchar();
   return 0;
 }
