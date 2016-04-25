@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="generate_error_codes.sh" />
-    <None Include="ReadMe.md" />
+    <None Include="..\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sgx_lib_t_util.c">
