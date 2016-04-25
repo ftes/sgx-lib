@@ -31,7 +31,10 @@
     <ClCompile Include="..\common\sgx_lib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sgx_lib_u_ocalls.c">
+    <ClCompile Include="sgx_lib_u_ocalls_debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgx_lib_u_ocalls_stdio.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
