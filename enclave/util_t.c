@@ -190,6 +190,7 @@ size_t fread(void* plaintext_buffer, size_t plaintext_element_size, size_t plain
 
   // STEP 2
   rc = unseal(plaintext_buffer, plaintext_data_size, sealed_buffer);
+  free(sealed_buffer);
   if (rc != 0) {
     // unsealing failed, return 0 elements read
     return 0; 
