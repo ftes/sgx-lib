@@ -3,8 +3,7 @@
 
 #include "sgx_lib_stdio.h"
 #include "sgx_lib_t_stdio.h"
-#include "sgx_lib_t_logging.h"
-#include "../sgx_lib_t/sgx_lib_t.h"
+#include "sgx_lib_t_debug.h"
 
 #define FILE_NAME "test_file_in_application_dir.txt"
 void add_secret(int secret) {
@@ -19,7 +18,6 @@ void print_secrets() {
   size_t ret;
   FILE *file = fopen(FILE_NAME, "rb" /*binary*/);
   fread(&secret, sizeof(secret), 1, file);
-  log_ocall("Secret: aaa");
-  log("Secret: %d", secret);
+  printf("Secret: %d", secret);
   fclose(file);
 }

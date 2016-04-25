@@ -16,7 +16,6 @@
 extern "C" {
 #endif
 
-void SGX_UBRIDGE(SGX_NOCONVENTION, log_ocall, (char* message));
 void SGX_UBRIDGE(SGX_NOCONVENTION, print_ocall, (char* message));
 void SGX_UBRIDGE(SGX_NOCONVENTION, rewind_ocall, (FILE* file));
 int SGX_UBRIDGE(SGX_NOCONVENTION, fseek_ocall, (FILE* file, long int offset, int origin));

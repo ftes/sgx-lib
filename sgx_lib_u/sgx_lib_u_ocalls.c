@@ -18,7 +18,6 @@ void print_ocall(char* message) {
   puts(message);
 }
 
-
 /* Function definitions in the .edl can also link directly against implementations provided by DLLs by adding [cdecl, dllimport] (see SDK guide).
    However, the generated stub in the enclave has a different signature in case the function has a return value. The generated signature of the
    trusted fopen stub would look like this:

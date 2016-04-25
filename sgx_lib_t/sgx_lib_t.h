@@ -17,7 +17,6 @@ extern "C" {
 
 
 
-sgx_status_t SGX_CDECL log_ocall(char* message);
 sgx_status_t SGX_CDECL print_ocall(char* message);
 sgx_status_t SGX_CDECL rewind_ocall(FILE* file);
 sgx_status_t SGX_CDECL fseek_ocall(int* retval, FILE* file, long int offset, int origin);

@@ -107,6 +107,8 @@
       <AdditionalIncludeDirectories>$(SGXSDKInstallPath)include;$(SGXSDKInstallPath)include\tlibc;$(SGXSDKInstallPath)include\stlport;..\include;.\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SGX_ENCLAVE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>Default</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Lib>
       <LinkTimeCodeGeneration>true</LinkTimeCodeGeneration>
@@ -141,7 +143,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\sgx_lib.h" />
     <ClInclude Include="..\include\sgx_lib_stdio.h" />
-    <ClInclude Include="include\sgx_lib_t_logging.h" />
+    <ClInclude Include="include\sgx_lib_t_debug.h" />
     <ClInclude Include="include\sgx_lib_t_stdio.h" />
     <ClInclude Include="sgx_lib_t.h" />
     <ClInclude Include="sgx_lib_t_util.h" />
@@ -168,9 +170,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\sgx_lib.c" />
-    <ClCompile Include="sgx_lib_t_ocalls_stdio.c" />
+    <ClCompile Include="sgx_lib_t_debug.c" />
+    <ClCompile Include="sgx_lib_t_stdio.c" />
     <ClCompile Include="sgx_lib_t_util.c" />
-    <ClCompile Include="sgx_lib_t_util_logging.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

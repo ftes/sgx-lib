@@ -1,21 +1,10 @@
 #include <stdlib.h>
 
 #include "sgx_lib_t_stdio.h"
-#include "sgx_lib_t_logging.h"
 #include "sgx_lib_t.h"
 #include "sgx_lib_t_util.h"
 
 #ifdef SGX_INSECURE_IO_OPERATIONS
-void printf(char* format, ...) {
-  char *formatted;
-  va_list argptr;
-  va_start(argptr, format);
-  formatted = vsprintf(format, argptr);
-  va_end(argptr);
-  print_ocall(formatted);
-  free(formatted);
-}
-
 size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   check(fwrite_enclave_memory_ocall(&ret, buffer, size, count, stream));
@@ -62,7 +51,7 @@ size_t fwrite(const void* plaintext_buffer, size_t plaintext_element_size, size_
   if (written_bytes != sealed_data_size) {
     // not all data was written
     // don't try to convert number of written sealed bytes to number of plaintext elements, rather just return 0
-    log("Not all sealed data could be written");
+    print_ocall("Not all sealed data could be written");
     return 0;
   }
 
@@ -87,7 +76,7 @@ size_t fread(void* plaintext_buffer, size_t plaintext_element_size, size_t plain
   if (read_bytes != sealed_data_size) {
     // not all data was read
     // don't try to convert number of read sealed bytes to number of plaintext elements, rather just return 0
-    log("Not all sealed data could be read");
+    print_ocall("Not all sealed data could be read");
     free(sealed_buffer);
     return 0;
   }

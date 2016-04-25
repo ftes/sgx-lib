@@ -8,7 +8,7 @@
 void check(sgx_status_t rc) {
   if (rc != SGX_SUCCESS) {
     char* desc = get_error_description(rc);
-    log_ocall(desc);
+    print_ocall(desc);
   }
 }
 
@@ -24,7 +24,7 @@ char* vsprintf(char* format, va_list args) {
 size_t get_sealed_data_size(size_t plaintext_data_size) {
   size_t sealed_data_size = sgx_calc_sealed_data_size(0, plaintext_data_size);
   if (sealed_data_size == UINT32_MAX) {
-    log_ocall("Failed to allocate calc number of bytes needed to seal plaintext data.");
+    print_ocall("Failed to allocate calc number of bytes needed to seal plaintext data.");
     return -1;
   }
   return sealed_data_size;
@@ -56,7 +56,7 @@ int seal(const void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_da
     ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    log_ocall("Failed to seal data");
+    print_ocall("Failed to seal data");
     return 1;
   }
 
@@ -82,7 +82,7 @@ int unseal(void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_data_t
     ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    log_ocall("Failed to unseal data");
+    print_ocall("Failed to unseal data");
     return 1; // error code
   }
 

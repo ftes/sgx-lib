@@ -4,6 +4,7 @@ This library contains helper functions for developing enclaves. These include
 - logging
 - file operations
 
+
 # Usage
 Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an enclave library.
 
@@ -14,10 +15,10 @@ Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an encl
 ## Trusted Application
 - `Properties -> Common Properties -> Frameworks and References -> Add sgx_lib_t`
 - Add additional include directories: `..\include` and `..\sgx_lib_t\include`
+- Set macro `SGX_ENCLAVE` (header problem with `sgx_lib_stdio.h`)
+
 
 # Configuration
-## General
-Macro `SGX_ENCLAVE` has to be set in enclave project (`mystdio.h` header problem).
 
 ## Insecure I/O operations
 Enabled by the `SGX_INSECURE_IO_OPERATIONS` macro.
@@ -27,3 +28,9 @@ When including legacy code, this allows legacy compatible behaviour, **without**
 
 Without this macro, writes and reads to standard and file streams are sealed (encrypted).
 Replay protection **IS NOT** added.
+
+
+# Development Caveats
+
+## No errors in libraries showing
+Currently, no errors are showing in the two library projects `sgx_lib_t` and `sgx_lib_u`. An erronuous project will compile and even run.

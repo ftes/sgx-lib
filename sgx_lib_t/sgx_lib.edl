@@ -8,8 +8,7 @@ enclave {
 		/* "pointers returned by an ECALL or OCALL function are not checked by
 		    the edge-routines and must be verified by the enclave code" (sdk guide) */
 
-		/* logging */
-		void log_ocall([in, string] char* message); /* INSECURE - leaks plaintext data */
+		/* debugging */
 		void print_ocall([in, string] char* message);
 
 		/* FILE* lives in untrusted memory */
