@@ -177,6 +177,7 @@
     <ClCompile Include="..\common\sgx_lib.c" />
     <ClCompile Include="sgx_lib_u_ocalls_debug.c" />
     <ClCompile Include="sgx_lib_u_ocalls_stdio.c" />
+    <ClCompile Include="sgx_lib_u_util.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

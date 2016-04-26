@@ -40,5 +40,8 @@
     <ClCompile Include="sgx_lib_u_ocalls_stdio.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sgx_lib_u_util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
