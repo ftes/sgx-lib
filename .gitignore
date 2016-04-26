@@ -7,7 +7,5 @@ ipch/
 *.sdf
 *.v11.suo
 
-enclave_t.c
-enclave_t.h
-enclave_u.c
-enclave_u.h
+sgx_lib_t/sgx_lib_t.h
+sgx_lib_u/sgx_lib_u.h
