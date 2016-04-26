@@ -16,12 +16,13 @@ A reference project that consumes this library can be found at `github.com/ftes/
 
 ## Consume library in Untrusted Project (application)
 - `Properties -> Common Properties -> Frameworks and References -> Add `sgx_lib_u`
-- Add additional include directory: `..\include` (relative path may differ, depending on your setup)
+- Add additional include directory: `..\sgx-lib\include` and `..\sgx-lib\sgx_lib_u\include` (relative path may differ, depending on your setup)
 
 ## Consume library in Trusted Project (enclave)
 - `Properties -> Common Properties -> Frameworks and References -> Add `sgx_lib_t`
-- Add additional include directories: `..\include` and `..\sgx_lib_t\include` (relative path may differ, depending on your setup)
+- Add additional include directories: `..\sgx-lib\include` and `..\sgx-lib\sgx_lib_t\include` (relative path may differ, depending on your setup)
 - Set macro `SGX_ENCLAVE` (header problem with `sgx_lib_stdio.h`)
+- Import OCALLs and ECALLs by adding to your `enclave.edl`: `from "../sgx-lib/sgx_lib_t/sgx_lib.edl" import *;` (relative path may differ, depending on your setup)
 
 
 # Configuration

@@ -26,6 +26,9 @@
     <ClInclude Include="sgx_lib_u.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\sgx_lib_u_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\sgx_lib.c">
