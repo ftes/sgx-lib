@@ -5,7 +5,7 @@
 
 sgx_status_t check(sgx_status_t rc, char* error_msg);
 
-sgx_status_t launch_enclave(wchar_t* enclave_dll_file, sgx_enclave_id_t* eid);
+sgx_status_t launch_enclave(const LPCWSTR enclave_dll_file, sgx_enclave_id_t* eid);
 sgx_status_t destroy_enclave(sgx_enclave_id_t eid);
 
 #endif
