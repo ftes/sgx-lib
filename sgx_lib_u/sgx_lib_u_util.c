@@ -14,7 +14,7 @@ sgx_status_t check(sgx_status_t rc, char* error_msg) {
 }
 
 /* Very simple for now: debug mode, no launch token supported */
- sgx_status_t launch_enclave(wchar_t* enclave_dll_file, /*out*/ sgx_enclave_id_t* eid) {
+ sgx_status_t launch_enclave(const LPCWSTR enclave_dll_file, /*out*/ sgx_enclave_id_t* eid) {
   sgx_launch_token_t token = {0};
   int updated = 0;
 
