@@ -24,6 +24,10 @@ A reference project that consumes this library can be found at `github.com/ftes/
 - Set macro `SGX_ENCLAVE` (header problem with `sgx_lib_stdio.h`)
 - Import OCALLs and ECALLs by adding to your `enclave.edl`: `from "../sgx-lib/sgx_lib_t/sgx_lib.edl" import *;` (relative path may differ, depending on your setup)
 
+## Configure Debugger
+- Use the `Intel SGX Debugger`
+- Set `Configuration Properties->Debugging->WorkingDirectory` to `$(OutDir)`
+
 
 # Configuration
 
@@ -35,9 +39,3 @@ When including legacy code, this allows legacy compatible behaviour, **without**
 
 Without this macro, writes and reads to standard and file streams are sealed (encrypted).
 Replay protection **IS NOT** added.
-
-
-# Development Caveats
-
-## No errors in libraries showing
-Currently, no errors are showing in the two library projects `sgx_lib_t` and `sgx_lib_u`. An erronuous project will compile and even run.
