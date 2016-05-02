@@ -48,5 +48,9 @@ enclave {
 
 
 		/* GENERATE OCALL CODE AFTER THIS LINE */
+ 		int64_t _ftelli64_ocall([user_check] FILE* file);
+ 		int fflush_ocall([user_check] FILE* file);
+ 		int fopen_s_ocall([user_check] FILE** file, [in, string] const char* filename, [in, string] const char* mode);
+ 		int _fseeki64_ocall([user_check] FILE* file, int64_t offset, int origin);
 	};
 };

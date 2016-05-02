@@ -31,3 +31,20 @@ int fclose_ocall(FILE* stream) {
 FILE* fopen_ocall(const char* filename, const char* mode) {
   return fopen(filename, mode);
 }
+
+/* GENERATE OCALL CODE AFTER THIS LINE */
+int64_t _ftelli64_ocall(FILE* file) {
+  return _ftelli64(file);
+}
+
+int fflush_ocall(FILE* file) {
+  return fflush(file);
+}
+
+int fopen_s_ocall(FILE** file, const char* filename, const char* mode) {
+  return fopen_s(file, filename, mode);
+}
+
+int _fseeki64_ocall(FILE* file, int64_t offset, int origin) {
+  return _fseeki64(file, offset, origin);
+}

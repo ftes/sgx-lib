@@ -122,3 +122,27 @@ FILE* fopen(const char* filename, const char* mode) {
 }
 
 /* GENERATE OCALL CODE AFTER THIS LINE */
+int64_t _ftelli64(FILE* file) {
+  int64_t ret;
+  check(_ftelli64_ocall(&ret, file));
+  return ret;
+}
+
+int fflush(FILE* file) {
+  int ret;
+  check(fflush_ocall(&ret, file));
+  return ret;
+}
+
+int fopen_s(FILE** file, const char* filename, const char* mode) {
+  int ret;
+  check(fopen_s_ocall(&ret, file, filename, mode));
+  return ret;
+}
+
+int _fseeki64(FILE* file, int64_t offest, int origin) {
+  int ret;
+  check(_fseeki64_ocall(&ret, file, offest, origin));
+  return ret;
+}
+
