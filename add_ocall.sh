@@ -7,9 +7,9 @@
 ENCLAVE_DIR="${ENCLAVE_DIR:-sgx_lib_t}"
 APP_DIR="${APP_DIR:-sgx_lib_u}"
 EDL="$ENCLAVE_DIR/${EDL:-sgx_lib.edl}"
-TRUSTED_C="$ENCLAVE_DIR/${TRUSTED_C:-sgx_lib_ocall.c}"
-TRUSTED_H="$ENCLAVE_DIR/${TRUSTED_H:-sgx_lib_ocall.h}"
-UNTRUSTED_C="$APP_DIR/util_u.c"
+TRUSTED_C="${TRUSTED_C:-$ENCLAVE_DIR/sgx_lib_ocall.c}"
+TRUSTED_H="${TRUSTED_H:-$ENCLAVE_DIR/sgx_lib_ocall.h}"
+UNTRUSTED_C="${UNTRUSTED_C:-$APP_DIR/sgx_lib_ocall.c}"
 
 FUNC=$1
 HOOK_IN_FILE=${HOOK_IN_FILE:-"\/\* GENERATE OCALL CODE AFTER THIS LINE \*\/"}
