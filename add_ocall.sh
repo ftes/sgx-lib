@@ -4,11 +4,11 @@
 # formatting of pointer types: `type* name` (asterisk right after type, without a space inbetween)
 # HOOK_IN_FILE (where to place generated code) can be overridden by an environment variable with that name
 
-ENCLAVE_DIR="enclave"
-APP_DIR="application"
-EDL="$ENCLAVE_DIR/enclave.edl"
-TRUSTED_C="$ENCLAVE_DIR/util_t.c"
-TRUSTED_H="$ENCLAVE_DIR/util_t.h"
+ENCLAVE_DIR="${ENCLAVE_DIR:-sgx_lib_t}"
+APP_DIR="${APP_DIR:-sgx_lib_u}"
+EDL="$ENCLAVE_DIR/${EDL:-sgx_lib.edl}"
+TRUSTED_C="$ENCLAVE_DIR/${TRUSTED_C:-sgx_lib_ocall.c}"
+TRUSTED_H="$ENCLAVE_DIR/${TRUSTED_H:-sgx_lib_ocall.h}"
 UNTRUSTED_C="$APP_DIR/util_u.c"
 
 FUNC=$1

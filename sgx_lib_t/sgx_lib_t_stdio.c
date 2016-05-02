@@ -93,8 +93,6 @@ size_t fread(void* plaintext_buffer, size_t plaintext_element_size, size_t plain
 }
 #endif
 
-
-/* file functions */
 void rewind(FILE* file) {
   check(rewind_ocall(file));
 }
@@ -122,7 +120,5 @@ FILE* fopen(const char* filename, const char* mode) {
   check(fopen_ocall(&ret, filename, mode));
   return ret;
 }
-/* end of file functions */
-
 
 /* GENERATE OCALL CODE AFTER THIS LINE */
