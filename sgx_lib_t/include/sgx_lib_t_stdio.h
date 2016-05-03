@@ -14,6 +14,18 @@ size_t fread(void* buffer, size_t size, size_t count, FILE* stream);
 int fclose(FILE* stream);
 FILE* fopen(const char* filename, const char* mode);
 
+size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream);
+size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream);
+size_t fwrite_encrypted(const void* buffer, size_t size, size_t count, FILE* stream);
+size_t fread_encrypted(void* buffer, size_t size, size_t count, FILE* stream);
+
+#ifdef SGX_INSECURE_IO_OPERATIONS
+#define fwrite fwrite_unencrypted
+#define fread fread_unencrypted
+#else
+#define fwrite fwrite_encrypted
+#define fread fread_encrypted
+#endif
 
 /* GENERATE OCALL CODE AFTER THIS LINE */
 int64_t _ftelli64(FILE* file);

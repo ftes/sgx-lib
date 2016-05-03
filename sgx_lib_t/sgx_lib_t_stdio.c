@@ -4,19 +4,19 @@
 #include "sgx_lib_t.h"
 #include "sgx_lib_t_util.h"
 
-#ifdef SGX_INSECURE_IO_OPERATIONS
-size_t fwrite(const void* buffer, size_t size, size_t count, FILE* stream) {
+
+size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   check(fwrite_enclave_memory_ocall(&ret, buffer, size, count, stream));
   return ret;
 }
 
-size_t fread(void* buffer, size_t size, size_t count, FILE* stream) {
+size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   check(fread_copy_into_enclave_memory_ocall(&ret, buffer, size, count, stream));
   return ret;
 }
-#else
+
 // WARNING: NOT REPLAY PROTECTED!
 
 /* Steps:
@@ -28,7 +28,7 @@ size_t fread(void* buffer, size_t size, size_t count, FILE* stream) {
  *
  * returns count of plaintext elements written if there was no error, 0 otherwise
  */
-size_t fwrite(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+size_t fwrite_encrypted(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
   size_t written_bytes;
   size_t plaintext_data_size = plaintext_element_size * plaintext_element_count;
   size_t sealed_data_size = get_sealed_data_size(plaintext_data_size);
@@ -62,7 +62,7 @@ size_t fwrite(const void* plaintext_buffer, size_t plaintext_element_size, size_
  * 1. fread sealed data
  * 2. unseal data
  */
-size_t fread(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+size_t fread_encrypted(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
   size_t read_bytes;
   size_t plaintext_data_size = plaintext_element_size * plaintext_element_count;
   int rc;
@@ -91,7 +91,7 @@ size_t fread(void* plaintext_buffer, size_t plaintext_element_size, size_t plain
 
   return plaintext_element_count;
 }
-#endif
+
 
 void rewind(FILE* file) {
   check(rewind_ocall(file));
