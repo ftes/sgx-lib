@@ -146,8 +146,8 @@
     <ClInclude Include="..\include\sgx_lib_stdio.h" />
     <ClInclude Include="include\sgx_lib_t_debug.h" />
     <ClInclude Include="include\sgx_lib_t_stdio.h" />
+    <ClInclude Include="include\sgx_lib_t_util.h" />
     <ClInclude Include="sgx_lib_t.h" />
-    <ClInclude Include="sgx_lib_t_util.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="sgx_lib.edl">
