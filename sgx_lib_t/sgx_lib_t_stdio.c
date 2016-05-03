@@ -7,12 +7,22 @@
 
 size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
+
+  #ifdef SGX_INSECURE_IO_OPERATIONS
+  print_ocall("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+  #endif
+
   check(fwrite_enclave_memory_ocall(&ret, buffer, size, count, stream));
   return ret;
 }
 
 size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
+
+  #ifdef SGX_INSECURE_IO_OPERATIONS
+  print_ocall("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+  #endif
+
   check(fread_copy_into_enclave_memory_ocall(&ret, buffer, size, count, stream));
   return ret;
 }
