@@ -10,9 +10,12 @@ Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an encl
 
 A reference project that consumes this library can be found at `github.com/ftes/sgx-lib-consumer/`
 
-## Import `sgx_lib_{u,t}` projects
-
-## Switch configuration to `Simulation`
+**Steps**:
+1. Import `sgx_lib_{u,t}` projects
+2. Switch configuration to `Simulation`
+3. Consume library in untrusted app (see below)
+4. Consume library in trusted enclave (see below)
+5. Use and configure SGX debugger (see below)
 
 ## Consume library in Untrusted Project (application)
 - `Properties -> Common Properties -> Frameworks and References -> Add `sgx_lib_u`
