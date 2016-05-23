@@ -11,6 +11,7 @@ Page 43 in the SGX SDK guide v1.1 gives details on how to create and use an encl
 A reference project that consumes this library can be found at `github.com/ftes/sgx-lib-consumer/`
 
 **Steps**:
+
 1. Import `sgx_lib_{u,t}` projects
 2. Switch configuration to `Simulation`
 3. Consume library in untrusted app (see below)
