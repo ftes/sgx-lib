@@ -13,7 +13,7 @@ bool insecure_warning_issued = false;
 size_t fwrite_insecure(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   if (!insecure_warning_issued) {
-    log_msg("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+    log_msg("Warning: insecure I/O operations used (most likely SGX_INSECURE_IO_OPERATIONS macro defined)");
     insecure_warning_issued = true;
   }
   check(fwrite_enclave_memory_ocall(&ret, buffer, size, count, stream));
@@ -23,7 +23,7 @@ size_t fwrite_insecure(const void* buffer, size_t size, size_t count, FILE* stre
 size_t fread_insecure(void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
   if (!insecure_warning_issued) {
-    log_msg("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+    log_msg("Warning: insecure I/O operations used (most likely SGX_INSECURE_IO_OPERATIONS macro defined)");
     insecure_warning_issued = true;
   }
   check(fread_copy_into_enclave_memory_ocall(&ret, buffer, size, count, stream));
