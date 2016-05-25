@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <sgx_tcrypto.h>
+
 #include "sgx_lib_stdio.h"
 
 /* file functions */
@@ -25,6 +27,18 @@ size_t fread_encrypted(void* buffer, size_t size, size_t count, FILE* stream);
 #else
 #define fwrite fwrite_encrypted
 #define fread fread_encrypted
+  #ifdef SGX_SECURE_IO_OPERATIONS_KEY
+  void set_secure_io_key(sgx_aes_ctr_128bit_key_t key);
+  #define get_output_data_size get_encrypted_data_size
+  #define seal_or_encrypt encrypt_with_set_key
+  #define unseal_or_decrypt decrypt_with_set_key
+  #define output_buffer_t sgx_lib_encrypted_data_t
+  #else
+  #define get_output_data_size get_sealed_data_size
+  #define seal_or_encrypt seal
+  #define unseal_or_decrypt unseal
+  #define output_buffer_t sgx_sealed_data_t
+  #endif
 #endif
 
 /* GENERATE OCALL CODE AFTER THIS LINE */

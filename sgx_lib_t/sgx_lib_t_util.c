@@ -3,12 +3,14 @@
 #include "sgx_lib_t.h"
 #include "sgx_lib.h"
 
+#include "sgx_lib_t_debug.h"
+
 #include "sgx_lib_t_util.h"
 
 void check(sgx_status_t rc) {
   if (rc != SGX_SUCCESS) {
     char* desc = get_error_description(rc);
-    print_ocall(desc);
+    log_msg(desc);
   }
 }
 

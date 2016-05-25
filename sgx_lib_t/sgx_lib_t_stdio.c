@@ -1,16 +1,19 @@
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "sgx_lib_t_stdio.h"
 #include "sgx_lib_t.h"
 #include "sgx_lib_t_util.h"
 #include "sgx_lib_t_crypto.h"
+#include "sgx_lib_t_debug.h"
 
 
 size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream) {
   size_t ret;
 
   #ifdef SGX_INSECURE_IO_OPERATIONS
-  print_ocall("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+  log_msg("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
   #endif
 
   check(fwrite_enclave_memory_ocall(&ret, buffer, size, count, stream));
@@ -21,7 +24,7 @@ size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream) 
   size_t ret;
 
   #ifdef SGX_INSECURE_IO_OPERATIONS
-  print_ocall("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
+  log_msg("Warning: insecure I/O operations activated (SGX_INSECURE_IO_OPERATIONS macro defined)");
   #endif
 
   check(fread_copy_into_enclave_memory_ocall(&ret, buffer, size, count, stream));
@@ -30,39 +33,61 @@ size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream) 
 
 // WARNING: NOT REPLAY PROTECTED!
 
+sgx_aes_ctr_128bit_key_t secure_io_key = {0};
+bool secure_io_key_initialized = false;
+void set_secure_io_key(sgx_aes_ctr_128bit_key_t key) {
+  secure_io_key_initialized = true;
+  memcpy(secure_io_key, key, sizeof(secure_io_key));
+}
+
+int encrypt_with_set_key(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer,
+                         uint32_t encrypted_buffer_size) {
+  if (!secure_io_key_initialized) {
+    log_msg("Secure IO key was not initialized");
+    return 1;
+  }
+  return encrypt(plaintext_buffer, plaintext_data_size, encrypted_buffer, &secure_io_key);
+}
+int decrypt_with_set_key(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer) {
+  if (!secure_io_key_initialized) {
+    log_msg("Secure IO key was not initialized");
+    return 1;
+  }
+  return decrypt(plaintext_buffer, plaintext_data_size, encrypted_buffer, &secure_io_key);
+}
+
+
 /* Steps:
- * 1. seal data
- * 2. fwrite sealed data
- *
- * Parameters:
- * - plaintext_buffer must be in the enclave
+ * 1. seal/encrypt data
+ * 2. fwrite sealed/encrypted data
  *
  * returns count of plaintext elements written if there was no error, 0 otherwise
  */
 size_t fwrite_encrypted(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
   size_t written_bytes;
   size_t plaintext_data_size = plaintext_element_size * plaintext_element_count;
-  size_t sealed_data_size = get_sealed_data_size(plaintext_data_size);
+  size_t output_data_size = get_output_data_size(plaintext_data_size);
 
   // STEP 1
   // temporary buffer (sealed_data) must be inside enclave, enforced by SGX lib
-  sgx_sealed_data_t* sealed_buffer = (sgx_sealed_data_t*) malloc(sealed_data_size);
-  int rc = seal(plaintext_buffer, plaintext_data_size, sealed_buffer, sealed_data_size);
+  output_buffer_t* output_buffer = (output_buffer_t*) malloc(output_data_size);
+  int rc = seal_or_encrypt(plaintext_buffer, plaintext_data_size, output_buffer, output_data_size);
+
   if (rc != 0) {
-    // sealing failed, return 0 elements written
+    // encrypting failed, return 0 elements written
     return 0; 
   }
 
   // STEP 2
   // sgx lib outputs sealed data into enclave memory, so we have to copy this outside in the fwrite ocall
-  check(fwrite_enclave_memory_ocall(&written_bytes, sealed_buffer, 1, sealed_data_size, stream));
+  check(fwrite_enclave_memory_ocall(&written_bytes, output_buffer, 1, output_data_size, stream));
   // free temp buffer (don't need to memset, encrypted anyway)
-  free(sealed_buffer);
+  free(output_buffer);
 
-  if (written_bytes != sealed_data_size) {
+  if (written_bytes != output_data_size) {
     // not all data was written
     // don't try to convert number of written sealed bytes to number of plaintext elements, rather just return 0
-    print_ocall("Not all sealed data could be written");
+    log_msg("Not all encrypted data could be written");
     return 0;
   }
 
@@ -77,26 +102,26 @@ size_t fread_encrypted(void* plaintext_buffer, size_t plaintext_element_size, si
   size_t read_bytes;
   size_t plaintext_data_size = plaintext_element_size * plaintext_element_count;
   int rc;
-  size_t sealed_data_size = get_sealed_data_size(plaintext_data_size);
+  size_t output_data_size = get_output_data_size(plaintext_data_size);
 
   // STEP 1
   // temporary buffer (sealed_data) must be inside enclave, enforced by SGX lib, so we let the fread ocall copy it inside
-  sgx_sealed_data_t* sealed_buffer = (sgx_sealed_data_t*) malloc(sealed_data_size);
-  check(fread_copy_into_enclave_memory_ocall(&read_bytes, sealed_buffer, 1, sealed_data_size, stream));
+  output_buffer_t* output_buffer = (sgx_sealed_data_t*) malloc(output_data_size);
+  check(fread_copy_into_enclave_memory_ocall(&read_bytes, output_buffer, 1, output_data_size, stream));
   
-  if (read_bytes != sealed_data_size) {
+  if (read_bytes != output_data_size) {
     // not all data was read
     // don't try to convert number of read sealed bytes to number of plaintext elements, rather just return 0
-    print_ocall("Not all sealed data could be read");
-    free(sealed_buffer);
+    log_msg("Not all sealed data could be read");
+    free(output_buffer);
     return 0;
   }
 
   // STEP 2
-  rc = unseal(plaintext_buffer, plaintext_data_size, sealed_buffer);
-  free(sealed_buffer);
+  rc = unseal_or_decrypt(plaintext_buffer, plaintext_data_size, output_buffer);
+  free(output_buffer);
   if (rc != 0) {
-    // unsealing failed, return 0 elements read
+    // decrypting failed, return 0 elements read
     return 0; 
   }
 

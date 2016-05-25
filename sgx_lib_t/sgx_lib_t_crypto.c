@@ -14,7 +14,7 @@
 uint32_t get_sealed_data_size(uint32_t plaintext_data_size) {
   size_t sealed_data_size = sgx_calc_sealed_data_size(0, plaintext_data_size);
   if (sealed_data_size == UINT32_MAX) {
-    print_ocall("Failed to allocate calc number of bytes needed to seal plaintext data.");
+    log_msg("Failed to allocate calc number of bytes needed to seal plaintext data.");
     return -1;
   }
   return sealed_data_size;
@@ -48,7 +48,7 @@ int seal(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_sealed_
     ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    print_ocall("Failed to seal data");
+    log_msg("Failed to seal data");
     return 1;
   }
 
@@ -74,18 +74,12 @@ int unseal(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_sealed_data
     ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    print_ocall("Failed to unseal data");
+    log_msg("Failed to unseal data");
     return 1; // error code
   }
 
   return 0;
 }
-
-typedef struct {
-  uint32_t number_of_blocks;
-  uint8_t ctr[CTR_SIZE];
-  uint8_t data[];
-} encrypted_struct, *Pencrypted_struct;
 
 /* parameters:
  * [IN] plaintext_data_size in bytes
@@ -103,7 +97,7 @@ uint32_t get_number_of_blocks(uint32_t plaintext_data_size) {
  * returns: size of encrypted buffer in bytes
  */
 uint32_t get_encrypted_data_size(uint32_t plaintext_data_size) {
-  return offsetof(encrypted_struct, data) + get_number_of_blocks(plaintext_data_size) * BLOCK_SIZE;
+  return offsetof(sgx_lib_encrypted_data_t, data) + get_number_of_blocks(plaintext_data_size) * BLOCK_SIZE;
 }
 
 /* convenience wrapper for sgx_aes_ctr_encrypt()
@@ -117,13 +111,10 @@ uint32_t get_encrypted_data_size(uint32_t plaintext_data_size) {
  * [IN] plaintext_data_size in bytes
  * returns: 0 on success, >0 otherwise
  */
-int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, void* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
+int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t *encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
   int size = 0;
   uint8_t ctr[CTR_SIZE] = {0};
-  
-  //use encrypted_buffer as struct
-  Pencrypted_struct encrypted = (Pencrypted_struct) encrypted_buffer;
 
   /* NIST recommendations on CTR mode (publication 800-38A, p. 15):
    * - CTR is incremented for each message block
@@ -135,18 +126,18 @@ int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, void* en
    */
   sgx_read_rand(ctr, CTR_NONCE_SIZE);
 
-  encrypted->number_of_blocks = get_number_of_blocks(plaintext_data_size);
-  memcpy(encrypted->ctr, ctr, CTR_SIZE);
+  encrypted_buffer->number_of_blocks = get_number_of_blocks(plaintext_data_size);
+  memcpy(encrypted_buffer->ctr, ctr, CTR_SIZE);
 
   // write encrypted data to output
   check(sgx_ret = sgx_aes_ctr_encrypt(key,
     (uint8_t*) plaintext_buffer, plaintext_data_size,
     ctr, CTR_INC_BITS,
-    encrypted->data
+    encrypted_buffer->data
   ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    print_ocall("Failed to encrypt data");
+    log_msg("Failed to encrypt data");
     return 1;
   }
 
@@ -165,21 +156,18 @@ int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, void* en
  * [IN] plaintext_data_size in bytes
  * returns: 0 on success, >0 otherwise
  */
-int decrypt(void* plaintext_buffer, uint32_t plaintext_data_size, void* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
+int decrypt(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
   uint8_t ctr[CTR_SIZE];
   void* plaintext_block_aligned_buffer;
   uint32_t plaintext_block_aligned_size;
   bool temp_plaintext_buffer = false;
 
-  //use encrypted_buffer as struct
-  Pencrypted_struct encrypted = (Pencrypted_struct) encrypted_buffer;
-
   // copy counter
-  memcpy(ctr, encrypted->ctr, CTR_SIZE);
+  memcpy(ctr, encrypted_buffer->ctr, CTR_SIZE);
 
   // allocate temporary block-aligned plaintext buffer, if plaintext_buffer is not block-aligned
-  plaintext_block_aligned_size = encrypted->number_of_blocks * BLOCK_SIZE;
+  plaintext_block_aligned_size = encrypted_buffer->number_of_blocks * BLOCK_SIZE;
   if (plaintext_data_size == plaintext_block_aligned_size) {
     plaintext_block_aligned_buffer = plaintext_buffer;
   } else {
@@ -189,13 +177,13 @@ int decrypt(void* plaintext_buffer, uint32_t plaintext_data_size, void* encrypte
 
   // read encrypted data
   check(sgx_ret = sgx_aes_ctr_decrypt(key,
-    encrypted->data, plaintext_block_aligned_size,
+    encrypted_buffer->data, plaintext_block_aligned_size,
     ctr, CTR_INC_BITS,
     (uint8_t*) plaintext_block_aligned_buffer
   ));
 
   if (sgx_ret != SGX_SUCCESS) {
-    print_ocall("Failed to encrypt data");
+    log_msg("Failed to encrypt data");
     return 1;
   }
 

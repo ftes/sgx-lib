@@ -36,6 +36,9 @@
     <ClInclude Include="include\sgx_lib_t_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\sgx_lib_t_crypto.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="generate_error_codes.sh" />
@@ -52,6 +55,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sgx_lib_t_debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sgx_lib_t_crypto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

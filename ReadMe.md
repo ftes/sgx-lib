@@ -43,3 +43,13 @@ When including legacy code, this allows legacy compatible behaviour, **without**
 
 Without this macro, writes and reads to standard and file streams are sealed (encrypted).
 Replay protection **IS NOT** added.
+
+## Secure I/O operations
+Use either
+
+1. `seal/unseal` or
+2. `encrypt/decrypt`
+
+as the underlying encryption primitive. (1) is the default, (2) is enabled by setting the `SGX_SECURE_IO_OPERATIONS_KEY` macro.
+
+(2) requires a symmetric encryption key, which can be set using `set_secure_io_key()`. This key is used to en/decrypt all subsequent I/O operations, until it is overwritten by another call to `set_secure_io_key()`.
