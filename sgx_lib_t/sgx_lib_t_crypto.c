@@ -86,18 +86,8 @@ int unseal(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_sealed_data
  *
  * returns: size of encrypted buffer in bytes
  */
-uint32_t get_number_of_blocks(uint32_t plaintext_data_size) {
-  // ceil(x/y) = (x + y - 1) - y
-  return (plaintext_data_size + BLOCK_SIZE - 1) / BLOCK_SIZE;
-}
-
-/* parameters:
- * [IN] plaintext_data_size in bytes
- *
- * returns: size of encrypted buffer in bytes
- */
 uint32_t get_encrypted_data_size(uint32_t plaintext_data_size) {
-  return offsetof(sgx_lib_encrypted_data_t, data) + get_number_of_blocks(plaintext_data_size) * BLOCK_SIZE;
+  return offsetof(sgx_lib_encrypted_data_t, data) + plaintext_data_size;
 }
 
 /* convenience wrapper for sgx_aes_ctr_encrypt()
@@ -107,7 +97,7 @@ uint32_t get_encrypted_data_size(uint32_t plaintext_data_size) {
  *
  * parameters:
  * [IN] key: must be 128 bits
- * [OUT] encrypted_buffer: minimum size in bytes given by get_encrypted_data_size()
+ * [OUT] encrypted_buffer: must have size given by get_encrypted_data_size()
  * [IN] plaintext_data_size in bytes
  * returns: 0 on success, >0 otherwise
  */
@@ -126,8 +116,7 @@ int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_
    */
   sgx_read_rand(ctr, CTR_NONCE_SIZE);
 
-  encrypted_buffer->number_of_blocks = get_number_of_blocks(plaintext_data_size);
-  memcpy(encrypted_buffer->ctr, ctr, CTR_SIZE);
+  memcpy(encrypted_buffer->ctr_nonce, ctr, CTR_NONCE_SIZE);
 
   // write encrypted data to output
   check(sgx_ret = sgx_aes_ctr_encrypt(key,
@@ -146,50 +135,29 @@ int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_
 
 /* convenience wrapper for sgx_aes_ctr_decrypt()
  * - does opposite of encrypt()
- * - decrypts encrypted_buffer->data into temporary buffer if plaintext_buffer does not have a block-aligned size
- *
- * Performance notice: Allocate plaintext_buffer to next multiple of BLOCK_SIZE (get_number_of_blocks(data_bytes) * BLOCK_SIZE)
- * and pass this as plaintext_data_size for increased performance (avoids memcpy of resulting plaintext).
  *
  * parameters:
- * [OUT] plaintext_buffer: must have minimum size of plaintext_data_size bytes
+ * [OUT] plaintext_buffer: must have size of plaintext_data_size bytes
  * [IN] plaintext_data_size in bytes
  * returns: 0 on success, >0 otherwise
  */
 int decrypt(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
-  uint8_t ctr[CTR_SIZE];
-  void* plaintext_block_aligned_buffer;
-  uint32_t plaintext_block_aligned_size;
-  bool temp_plaintext_buffer = false;
+  uint8_t ctr[CTR_SIZE] = {0};
 
   // copy counter
-  memcpy(ctr, encrypted_buffer->ctr, CTR_SIZE);
-
-  // allocate temporary block-aligned plaintext buffer, if plaintext_buffer is not block-aligned
-  plaintext_block_aligned_size = encrypted_buffer->number_of_blocks * BLOCK_SIZE;
-  if (plaintext_data_size == plaintext_block_aligned_size) {
-    plaintext_block_aligned_buffer = plaintext_buffer;
-  } else {
-    temp_plaintext_buffer = true;
-    plaintext_block_aligned_buffer = malloc(plaintext_block_aligned_size);
-  }
+  memcpy(ctr, encrypted_buffer->ctr_nonce, CTR_NONCE_SIZE);
 
   // read encrypted data
   check(sgx_ret = sgx_aes_ctr_decrypt(key,
-    encrypted_buffer->data, plaintext_block_aligned_size,
+    encrypted_buffer->data, plaintext_data_size,
     ctr, CTR_INC_BITS,
-    (uint8_t*) plaintext_block_aligned_buffer
+    (uint8_t*) plaintext_buffer
   ));
 
   if (sgx_ret != SGX_SUCCESS) {
     log_msg("Failed to encrypt data");
     return 1;
-  }
-
-  if (temp_plaintext_buffer) {
-    memcpy(plaintext_buffer, plaintext_block_aligned_buffer, plaintext_data_size);
-    free(plaintext_block_aligned_buffer);
   }
 
   return 0;

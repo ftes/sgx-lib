@@ -21,11 +21,9 @@ int unseal(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_sealed_data
 
 
 typedef struct {
-  uint32_t number_of_blocks;
-  uint8_t ctr[CTR_SIZE];
+  uint8_t ctr_nonce[CTR_NONCE_SIZE];
   uint8_t data[];
 } sgx_lib_encrypted_data_t;
-uint32_t get_number_of_blocks(uint32_t plaintext_data_size);
 uint32_t get_encrypted_data_size(uint32_t plaintext_data_size);
 int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
 int decrypt(void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_encrypted_data_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
