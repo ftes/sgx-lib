@@ -2,6 +2,7 @@
 #define SGX_LIB_T_STDIO_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #include <sgx_tcrypto.h>
 
