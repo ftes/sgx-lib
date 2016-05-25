@@ -7,10 +7,12 @@
 /* AES CTR mode counter size in bytes: 128 bit */
 #define CTR_SIZE 16
 
-/* number of bits (least significant) to increment */
-#define CTR_INC_BITS 64
+/* number of bytes (most significant) to use as message nonce in counter */
+#define CTR_NONCE_SIZE 8
 
-#define CTR_NONCE_BITS CTR_SIZE * 16 - CTR_INC_BITS
+/* number of bits (least significant) to increment */
+#define CTR_INC_BITS (CTR_SIZE-CTR_NONCE_SIZE)*8
+
 
 /* AES block size in bytes */
 #define BLOCK_SIZE 16
@@ -22,7 +24,7 @@ int seal(const void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_da
 int unseal(void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_data_t* sealed_buffer);
 
 int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count,
-            uint8_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
-int decrypt(const uint8_t* encrypted_buffer, uint8_t* decrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
+            uint8_t** encrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
+int decrypt(const uint8_t* encrypted_buffer, uint8_t** decrypted_buffer, sgx_aes_ctr_128bit_key_t* key);
 
 #endif

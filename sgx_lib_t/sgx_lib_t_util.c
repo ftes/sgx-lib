@@ -109,9 +109,9 @@ int unseal(void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_data_t
  * returns: number of bytes written to encrypted_buffer on success, -1 otherwise
  */
 int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count,
-            uint8_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
+            uint8_t** encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
-  uint8_t ctr[CTR_SIZE];
+  uint8_t ctr[CTR_SIZE] = {0};
   int size, position = 0;
 
   uint32_t plaintext_size = plaintext_element_size * plaintext_element_count;
@@ -119,7 +119,7 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
   uint32_t number_of_encrypted_data_blocks = (plaintext_size + BLOCK_SIZE - 1) / BLOCK_SIZE;
   uint32_t number_of_encrypted_blocks = 1 + number_of_encrypted_data_blocks;
   size_t encrypted_buffer_size = sizeof(number_of_encrypted_blocks) + CTR_SIZE + BLOCK_SIZE * number_of_encrypted_blocks;
-  encrypted_buffer = (uint8_t*) malloc(encrypted_buffer_size);
+  *encrypted_buffer = (uint8_t*) malloc(encrypted_buffer_size);
 
   /* NIST recommendations on CTR mode (publication 800-38A, p. 15):
    * - CTR is incremented for each message block
@@ -130,16 +130,16 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
    *   2. new nonce (IV) for each message which is b/2 bits long (MSB) -> increment the remaining b/2 LSB
    */
   
-  sgx_read_rand(ctr, CTR_NONCE_BITS);
+  sgx_read_rand(ctr, CTR_NONCE_SIZE);
 
   // write number of encrypted blocks to output
   size = sizeof(number_of_encrypted_data_blocks);
-  memcpy(&encrypted_buffer[position], &number_of_encrypted_blocks, size);
+  memcpy(*encrypted_buffer + position, &number_of_encrypted_blocks, size);
   position += size;
 
   // write initial counter to output
   size = CTR_SIZE;
-  memcpy(&encrypted_buffer[position], ctr, CTR_SIZE);
+  memcpy(*encrypted_buffer + position, ctr, CTR_SIZE);
   position += size;
 
   printf("Initial counter:\n%d\n\n", ctr);
@@ -148,7 +148,7 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
   check(sgx_ret = sgx_aes_ctr_encrypt(key,
     (uint8_t*) &plaintext_size, sizeof(plaintext_size) * 1,
     ctr, CTR_INC_BITS,
-    &encrypted_buffer[position]
+    *encrypted_buffer + position
   ));
   position += BLOCK_SIZE;
 
@@ -163,7 +163,7 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
   check(sgx_ret = sgx_aes_ctr_encrypt(key,
     (uint8_t*) plaintext_buffer, plaintext_size,
     ctr, CTR_INC_BITS,
-    &encrypted_buffer[position]
+    *encrypted_buffer + position
   ));
   position += number_of_encrypted_data_blocks * BLOCK_SIZE;
 
@@ -175,7 +175,14 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
   return encrypted_buffer_size;
 }
 
-int decrypt(const uint8_t* encrypted_buffer, uint8_t* decrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
+/* convenience wrapper for sgx_aes_ctr_decrypt()
+ * - see encrypt() for details
+ *
+ * parameters:
+ * [OUT] dcrypted_buffer: allocates memory and writes result to this buffer
+ * returns: number of bytes written to decrypted_buffer on success, -1 otherwise
+ */
+int decrypt(const uint8_t* encrypted_buffer, uint8_t** decrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
   uint8_t ctr[CTR_SIZE];
   uint32_t number_of_encrypted_blocks;
@@ -207,13 +214,13 @@ int decrypt(const uint8_t* encrypted_buffer, uint8_t* decrypted_buffer, sgx_aes_
   }
 
   // allocate memory for plaintext
-  decrypted_buffer = (uint8_t*) malloc(plaintext_size);
+  *decrypted_buffer = (uint8_t*) malloc(plaintext_size);
 
   // read encrypted data
   check(sgx_ret = sgx_aes_ctr_decrypt(key,
     encrypted_buffer + position, (number_of_encrypted_blocks - 1) * BLOCK_SIZE,
     ctr, CTR_INC_BITS,
-    decrypted_buffer
+    *decrypted_buffer
   ));
   position += (number_of_encrypted_blocks - 1) * BLOCK_SIZE;
 
