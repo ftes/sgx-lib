@@ -28,6 +28,7 @@ size_t fread_sealed(void* buffer, size_t size, size_t count, FILE* stream);
 #define fread fread_insecure
 #else
   #ifdef SGX_SECURE_IO_OPERATIONS_KEY
+  void set_secure_io_key(sgx_aes_ctr_128bit_key_t key);
   #define fwrite fwrite_encrypted
   #define fread fread_encrypted
   #else
