@@ -4,11 +4,13 @@
 #include <stdarg.h>
 #include <sgx_tseal.h>
 
-/* AES CBC Counter size in bytes */
-#define CTR_SIZE 12
+/* AES CTR mode counter size in bytes: 128 bit */
+#define CTR_SIZE 16
 
-// TODO do not increment entire counter (https://software.intel.com/en-us/forums/intel-software-guard-extensions-intel-sgx/topic/633345)
-#define CTR_INC_BITS CTR_SIZE * 8
+/* number of bits (least significant) to increment */
+#define CTR_INC_BITS 64
+
+#define CTR_NONCE_BITS CTR_SIZE * 16 - CTR_INC_BITS
 
 /* AES block size in bytes */
 #define BLOCK_SIZE 16

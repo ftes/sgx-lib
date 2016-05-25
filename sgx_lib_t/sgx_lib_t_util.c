@@ -99,6 +99,8 @@ int unseal(void* plaintext_buffer, size_t plaintext_data_size, sgx_sealed_data_t
  * - also encrypts the number of written bytes, to properly restore the output when decrypting
  *
  * output format: number_of_encrypted_blocks | iv | enc(data_size) | enc(data)
+
+ * TODO: standard padding alg. (PKCS#7) instead of outputting enc(data_size) block
  *
  * parameters:
  * [IN] key: must be 128 bits
@@ -110,6 +112,7 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
             uint8_t* encrypted_buffer, sgx_aes_ctr_128bit_key_t* key) {
   sgx_status_t sgx_ret;
   uint8_t ctr[CTR_SIZE];
+  int size, position = 0;
 
   uint32_t plaintext_size = plaintext_element_size * plaintext_element_count;
   // ceil(x/y) = (x + y - 1) - y  blocks for data
@@ -127,12 +130,7 @@ int encrypt(const void* plaintext_buffer, size_t plaintext_element_size, size_t 
    *   2. new nonce (IV) for each message which is b/2 bits long (MSB) -> increment the remaining b/2 LSB
    */
   
-  // TODO use b/2 bis as message nonce, and encrypt remaining b/2 as counter
-  // dependent on: https://software.intel.com/en-us/forums/intel-software-guard-extensions-intel-sgx/topic/633345
-  sgx_read_rand(ctr, CTR_SIZE);
-
-  int position = 0;
-  int size = 0;
+  sgx_read_rand(ctr, CTR_NONCE_BITS);
 
   // write number of encrypted blocks to output
   size = sizeof(number_of_encrypted_data_blocks);
@@ -182,8 +180,6 @@ int decrypt(const uint8_t* encrypted_buffer, uint8_t* decrypted_buffer, sgx_aes_
   uint8_t ctr[CTR_SIZE];
   uint32_t number_of_encrypted_blocks;
   uint32_t plaintext_size;
-  
-  // input format: number_of_encrypted_blocks | iv | enc(data_size) | enc(data)
 
   int position = 0;
   int size;
