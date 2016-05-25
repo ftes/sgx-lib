@@ -66,26 +66,6 @@ int unseal_with_cast(void* plaintext_buffer, uint32_t plaintext_data_size, void*
   return unseal(plaintext_buffer, plaintext_data_size, (sgx_sealed_data_t*) sealed_buffer);
 }
 
-size_t fwrite_encrypted(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
-  return fwrite_encrypt_or_seal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
-    get_encrypted_data_size(plaintext_element_count * plaintext_element_size), &encrypt_with_set_key);
-}
-
-size_t fread_encrypted(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
-  return fread_decrypt_or_unseal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
-    get_encrypted_data_size(plaintext_element_count * plaintext_element_size), &decrypt_with_set_key);
-}
-
-size_t fwrite_sealed(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
-  return fwrite_encrypt_or_seal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
-    get_sealed_data_size(plaintext_element_count * plaintext_element_size), &seal_with_cast);
-}
-
-size_t fread_sealed(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
-  return fread_decrypt_or_unseal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
-    get_sealed_data_size(plaintext_element_count * plaintext_element_size), &unseal_with_cast);
-}
-
 /* Steps:
  * 1. seal/encrypt data
  * 2. fwrite sealed/encrypted data
@@ -155,6 +135,26 @@ size_t fread_decrypt_or_unseal(void* plaintext_buffer, size_t plaintext_element_
   }
 
   return plaintext_element_count;
+}
+
+size_t fwrite_encrypted(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+  return fwrite_encrypt_or_seal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
+    get_encrypted_data_size(plaintext_element_count * plaintext_element_size), &encrypt_with_set_key);
+}
+
+size_t fread_encrypted(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+  return fread_decrypt_or_unseal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
+    get_encrypted_data_size(plaintext_element_count * plaintext_element_size), &decrypt_with_set_key);
+}
+
+size_t fwrite_sealed(const void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+  return fwrite_encrypt_or_seal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
+    get_sealed_data_size(plaintext_element_count * plaintext_element_size), &seal_with_cast);
+}
+
+size_t fread_sealed(void* plaintext_buffer, size_t plaintext_element_size, size_t plaintext_element_count, FILE* stream) {
+  return fread_decrypt_or_unseal(plaintext_buffer, plaintext_element_size, plaintext_element_count, stream,
+    get_sealed_data_size(plaintext_element_count * plaintext_element_size), &unseal_with_cast);
 }
 
 
