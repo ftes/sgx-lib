@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\sgx_lib.h" />
     <ClInclude Include="..\include\sgx_lib_stdio.h" />
+    <ClInclude Include="include\sgx_lib_t_crypto.h" />
     <ClInclude Include="include\sgx_lib_t_debug.h" />
     <ClInclude Include="include\sgx_lib_t_stdio.h" />
     <ClInclude Include="include\sgx_lib_t_util.h" />
@@ -171,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\sgx_lib.c" />
+    <ClCompile Include="sgx_lib_t_crypto.c" />
     <ClCompile Include="sgx_lib_t_debug.c" />
     <ClCompile Include="sgx_lib_t_stdio.c" />
     <ClCompile Include="sgx_lib_t_util.c" />

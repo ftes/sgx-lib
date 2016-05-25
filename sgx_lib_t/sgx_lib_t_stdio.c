@@ -3,6 +3,7 @@
 #include "sgx_lib_t_stdio.h"
 #include "sgx_lib_t.h"
 #include "sgx_lib_t_util.h"
+#include "sgx_lib_t_crypto.h"
 
 
 size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream) {
