@@ -79,6 +79,7 @@ size_t fwrite_encrypt_or_seal(const void* plaintext_buffer, size_t plaintext_ele
   // STEP 1
   // temporary buffer (sealed_data) must be inside enclave, enforced by SGX lib
   void* output_buffer = malloc(output_data_size);
+  memset(output_buffer, 0, output_data_size);
   int rc = encrypt_or_seal(plaintext_buffer, plaintext_data_size, output_buffer, output_data_size);
 
   if (rc != 0) {
