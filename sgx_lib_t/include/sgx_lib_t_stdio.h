@@ -16,28 +16,23 @@ size_t fread(void* buffer, size_t size, size_t count, FILE* stream);
 int fclose(FILE* stream);
 FILE* fopen(const char* filename, const char* mode);
 
-size_t fwrite_unencrypted(const void* buffer, size_t size, size_t count, FILE* stream);
-size_t fread_unencrypted(void* buffer, size_t size, size_t count, FILE* stream);
+size_t fwrite_insecure(const void* buffer, size_t size, size_t count, FILE* stream);
+size_t fread_insecure(void* buffer, size_t size, size_t count, FILE* stream);
 size_t fwrite_encrypted(const void* buffer, size_t size, size_t count, FILE* stream);
 size_t fread_encrypted(void* buffer, size_t size, size_t count, FILE* stream);
+size_t fwrite_sealed(const void* buffer, size_t size, size_t count, FILE* stream);
+size_t fread_sealed(void* buffer, size_t size, size_t count, FILE* stream);
 
 #ifdef SGX_INSECURE_IO_OPERATIONS
-#define fwrite fwrite_unencrypted
-#define fread fread_unencrypted
+#define fwrite fwrite_insecure
+#define fread fread_insecure
 #else
-#define fwrite fwrite_encrypted
-#define fread fread_encrypted
   #ifdef SGX_SECURE_IO_OPERATIONS_KEY
-  void set_secure_io_key(sgx_aes_ctr_128bit_key_t key);
-  #define get_output_data_size get_encrypted_data_size
-  #define seal_or_encrypt encrypt_with_set_key
-  #define unseal_or_decrypt decrypt_with_set_key
-  #define output_buffer_t sgx_lib_encrypted_data_t
+  #define fwrite fwrite_encrypted
+  #define fread fread_encrypted
   #else
-  #define get_output_data_size get_sealed_data_size
-  #define seal_or_encrypt seal
-  #define unseal_or_decrypt unseal
-  #define output_buffer_t sgx_sealed_data_t
+  #define fwrite fwrite_sealed
+  #define fread fread_sealed
   #endif
 #endif
 
