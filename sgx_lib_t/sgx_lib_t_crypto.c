@@ -93,8 +93,6 @@ uint32_t get_encrypted_data_size(uint32_t plaintext_data_size) {
 /* convenience wrapper for sgx_aes_ctr_encrypt()
  * - generates a random initial counter (IV) and adds this (in plaintext) to the enrypted_buffer
  *
- * output format: see encrypted_struct
- *
  * parameters:
  * [IN] key: must be 128 bits
  * [OUT] encrypted_buffer: must have size given by get_encrypted_data_size()
@@ -106,9 +104,9 @@ int encrypt(const void* plaintext_buffer, uint32_t plaintext_data_size, sgx_lib_
   int size = 0;
   uint8_t ctr[CTR_SIZE] = {0};
 
-  /* NIST recommendations on CTR mode (publication 800-38A, p. 15):
+  /* NIST documentation of CTR mode (publication 800-38A, p. 15):
    * - CTR is incremented for each message block
-   * - CTR is encrypted, and then serves as pad (output block) with which plaintext (ciphertext) is XOR-ed
+   * - CTR is encrypted, and then serves as encryption pad (output block) with which plaintext (ciphertext) is XOR-ed
    * - benefit: output blocks can be derived in parallel, even before payload is available
    * - CTR must be unique over all messages encrypted under same key -> IV that is initial CTR must be unique
    * - choosing an IV:
