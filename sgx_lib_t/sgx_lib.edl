@@ -1,56 +1,52 @@
 enclave {
     trusted {
     };
-	
-	include "stdio.h"
-	include "sgx_lib_stdio.h"
+    
+    include "stdio.h"
+    include "sgx_lib_stdio.h"
     untrusted {
-		/* "pointers returned by an ECALL or OCALL function are not checked by
-		    the edge-routines and must be verified by the enclave code" (sdk guide) */
+        /* "pointers returned by an ECALL or OCALL function are not checked by
+            the edge-routines and must be verified by the enclave code" (sdk guide) */
 
-		/* Function definitions in the .edl can also link directly against implementations provided by DLLs by adding [cdecl, dllimport] (see SDK guide).
-		   However, the generated stub in the enclave has a different signature in case the function has a return value. The generated signature of the
-		   trusted fopen stub would look like this:
+        /* Function definitions in the .edl can also link directly against implementations provided by DLLs by adding [cdecl, dllimport] (see SDK guide).
+           However, the generated stub in the enclave has a different signature in case the function has a return value. The generated signature of the
+           trusted fopen stub would look like this:
 
-		   fopen(int* retVal, const char* filename, const char* mode);
+           fopen(int* retVal, const char* filename, const char* mode);
 
-		   So to provide trusted functions with the original signature, one has to overload the functions in the enclave. This is not possible in C, so
-		   C++ has to be used. Pulling in a dependency on C++ is not a good tradeoff for saving three lines per ocall in this file.
+           So to provide trusted functions with the original signature, one has to overload the functions in the enclave. This is not possible in C, so
+           C++ has to be used. Pulling in a dependency on C++ is not a good tradeoff for saving three lines per ocall in this file.
    
-		   Rather, the ocalls are named *_ocall, so no overloading is necessary, and the wrapper functions in this file then link the stubs against the
-		   actual DLL implementations.
-		*/
+           Rather, the ocalls are named *_ocall, so no overloading is necessary, and the wrapper functions in this file then link the stubs against the
+           actual DLL implementations.
+        */
 
 
 
-		/* debugging */
-		void print_ocall([in, string] char* message);
+        /* debugging */
+        void print_ocall([in, string] char* message);
 
+        /* file functions */
+        /* FILE* lives in untrusted memory */
+        void rewind_ocall([user_check] FILE* file);
+        int fseek_ocall([user_check] FILE* file, long offset, int origin);
+        long ftell_ocall([user_check] FILE* file);
 
+        /* two versions: either write mem living in enclave, or in application */
+        size_t fwrite_enclave_memory_ocall([in, size=size, count=count] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+        /*size_t fwrite_untrusted_memory_ocall([user_check] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
 
-		/* file functions */
-		/* FILE* lives in untrusted memory */
- 		void rewind_ocall([user_check] FILE* file);
- 		int fseek_ocall([user_check] FILE* file, long offset, int origin);
- 		long ftell_ocall([user_check] FILE* file);
+        /* two versions: copy buffer into enclave, or leave buffer in applcation */
+        size_t fread_copy_into_enclave_memory_ocall([out, size=size, count=count] void* buffer, size_t size, size_t count, [user_check] FILE* stream);
+        /*size_t fread_leave_in_untrusted_memory_ocall([user_check] void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
 
-		/* two versions: either write mem living in enclave, or in application */
- 		size_t fwrite_enclave_memory_ocall([in, size=size, count=count] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);
- 		/*size_t fwrite_untrusted_memory_ocall([user_check] const void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
+        int fclose_ocall([user_check] FILE* stream);
+        FILE* fopen_ocall([in,string] const char* filename, [in,string] const char* mode);
 
-		/* two versions: copy buffer into enclave, or leave buffer in applcation */
- 		size_t fread_copy_into_enclave_memory_ocall([out, size=size, count=count] void* buffer, size_t size, size_t count, [user_check] FILE* stream);
- 		/*size_t fread_leave_in_untrusted_memory_ocall([user_check] void* buffer, size_t size, size_t count, [user_check] FILE* stream);*/
-
- 		int fclose_ocall([user_check] FILE* stream);
- 		FILE* fopen_ocall([in,string] const char* filename, [in,string] const char* mode);
-
-
-
-		/* GENERATE OCALL CODE AFTER THIS LINE */
- 		int64_t _ftelli64_ocall([user_check] FILE* file);
- 		int fflush_ocall([user_check] FILE* file);
- 		int fopen_s_ocall([user_check] FILE** file, [in, string] const char* filename, [in, string] const char* mode);
- 		int _fseeki64_ocall([user_check] FILE* file, int64_t offset, int origin);
-	};
+        /* GENERATE OCALL CODE AFTER THIS LINE */
+        int64_t _ftelli64_ocall([user_check] FILE* file);
+        int fflush_ocall([user_check] FILE* file);
+        int fopen_s_ocall([user_check] FILE** file, [in, string] const char* filename, [in, string] const char* mode);
+        int _fseeki64_ocall([user_check] FILE* file, int64_t offset, int origin);
+    };
 };
